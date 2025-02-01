@@ -21,7 +21,8 @@ local KingsKnightBID              = GameInfo.UnitPromotions["PROMOTION_SPUE_KNIG
 local KingsKnightCID              = GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW_C"].ID
 
 -- local KingsKnightPops				= 0
-local g_KingsKnightPops           = { GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW_A000"].ID,
+local g_KingsKnightPops           = { 
+	GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW_A000"].ID,
 	GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW_A020"].ID,
 	GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW_A040"].ID,
 	GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW_A060"].ID,
@@ -450,8 +451,8 @@ function NewUnitCreationRules() ------------------------Human Player's units rul
 		end
 	end
 end ------function end
-
-Events.ActivePlayerTurnStart.Add(NewUnitCreationRules)
+-- 依托SPv10.9代码实现
+--Events.ActivePlayerTurnStart.Add(NewUnitCreationRules)
 --------------------------------------------------------------
 -- 鹰击21装载
 --------------------------------------------------------------
@@ -973,25 +974,12 @@ function SPUE_PlayerDoneTurn(playerID)
 			local plot = unit:GetPlot();
 			local ihealth_bonus = 0;
 
-			local unitCount = plot:GetNumUnits();
 			local uniqueRange = 2;
-			if unitCount >= 1 then
-				for i = 0, unitCount - 1, 1 do
-					local pFoundUnit = plot:GetUnit(i)
-					if pFoundUnit ~= nil and pFoundUnit:GetID() ~= unit:GetID() then
-						local pPlayer = Players[pFoundUnit:GetOwner()];
-						if pPlayer == player then
-							pFoundUnit:ChangeDamage(-20);
-						end
-					end
-				end
-			end
-
 			for dx = -uniqueRange, uniqueRange, 1 do
 				for dy = -uniqueRange, uniqueRange, 1 do
 					local adjPlot = Map.PlotXYWithRangeCheck(plot:GetX(), plot:GetY(), dx, dy, uniqueRange);
 					if (adjPlot ~= nil) then
-						unitCount = adjPlot:GetNumUnits();
+						local unitCount = adjPlot:GetNumUnits();
 						if unitCount >= 1 then
 							for i = 0, unitCount - 1, 1 do
 								local pFoundUnit = adjPlot:GetUnit(i);
@@ -1776,8 +1764,8 @@ function SPUE_Unit_Effect_UnitSetXY(playerID)
 	end
 end
 
-GameEvents.UnitSetXY.Add(SPUE_Unit_Effect_UnitSetXY)
-GameEvents.UnitCreated.Add(SPUE_Unit_Effect_UnitSetXY)
+--GameEvents.UnitSetXY.Add(SPUE_Unit_Effect_UnitSetXY)
+--GameEvents.UnitCreated.Add(SPUE_Unit_Effect_UnitSetXY)
 --------------------------------------------------------------
 -- 王都骑士团：兵士集结
 --------------------------------------------------------------
@@ -4271,27 +4259,23 @@ LuaEvents.UnitPanelActionAddin(HessianMissionButton);
 --------------------------------------------------------------
 -- 人类玩家无法通过城市建造仆从军/雇佣兵
 --------------------------------------------------------------
-local g_PatronageVassalUnitClassList = { "UNITCLASS_SPUE_CORVETTE",
-	"UNITCLASS_SPUE_SHENJI_MUSKETEER",
+local g_PatronageVassalUnitClassList = {
+	GameInfoTypes["UNITCLASS_SPUE_CORVETTE"],
+	GameInfoTypes["UNITCLASS_SPUE_SHENJI_MUSKETEER"],
 
-	"UNITCLASS_SPUE_VASSAL_BOWMAN",
-	"UNITCLASS_SPUE_SOCII_HASTATI",
+	GameInfoTypes["UNITCLASS_SPUE_VASSAL_BOWMAN"],
+	GameInfoTypes["UNITCLASS_SPUE_SOCII_HASTATI"],
 
-	"UNITCLASS_SPUE_FIRE_THROWER",
-	"UNITCLASS_SPUE_OCEAN_FIRE" }
+	GameInfoTypes["UNITCLASS_SPUE_FIRE_THROWER"],
+	GameInfoTypes["UNITCLASS_SPUE_OCEAN_FIRE"]
+}
 function SPUE_Patronage_PlayerCanTrain(playerID, unitID)
 	local player = Players[playerID];
 	local playerTeam = Teams[player:GetTeam()];
 
 	if player:IsHuman() then
-		-- local unit = player:GetUnitByID(unitID);
-		local vassalUnitsTable = g_PatronageVassalUnitClassList;
-		local numVassalUnitClass = #vassalUnitsTable;
-
-		for index = 1, numVassalUnitClass do
-			local ivUnitType = GetCivSpecificUnit(player, vassalUnitsTable[index]);
-			local ivUnit = GameInfo.Units[GameInfoTypes[ivUnitType]];
-			if ivUnit.ID == unitID then
+		for _, v in pairs(g_PatronageVassalUnitClassList) do
+			if player:GetCivUnit(v) == unitID then
 				return false;
 			end
 		end

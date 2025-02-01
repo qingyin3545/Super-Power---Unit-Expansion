@@ -265,6 +265,10 @@ INSERT INTO Unit_ResourceQuantityRequirements
 		(UnitType, 				        	ResourceType, Cost)
 SELECT	'UNIT_SPUE_FREEDOM_HELICARRIER',    ResourceType, Cost
 FROM Unit_ResourceQuantityRequirements WHERE UnitType = 'UNIT_NUCLEAR_CARRIER';
+
+INSERT INTO SPCarrierTransferPromotions
+        (CarrierPromotionType,                      FighterPromotionType)
+VALUES	('PROMOTION_SPUE_FREEDOM_HELICARRIER',		'PROMOTION_SPUE_FREEDOM_HELICARRIER_FIGHTER');
 --==========================================================================================================================	
 -- 喷火-- 自由 解锁 
 --==========================================================================================================================
