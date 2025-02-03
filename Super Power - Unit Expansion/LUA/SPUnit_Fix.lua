@@ -1784,7 +1784,7 @@ SPUE_Knight_New_Button = {
 		local player = Players[unit:GetOwner()]
 		local SPUE_Knight_New_Flag = load(player, "Knight Rally", SPUE_Knight_New_Flag) or 0
 		local flag = 0
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_KNIGHT_NEW"].ID) and SPUE_Knight_New_Flag == 0
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_KNIGHT_NEW"]) and SPUE_Knight_New_Flag == 0
 		then
 			flag = TroopsLeftFlag(player, math.min(6, player:GetNumCities() - 1));
 		end
@@ -1897,8 +1897,8 @@ SPUE_Rohan_Cavalry_Button = {
 
 		if unit:CanMove()
 			-- and CountUnitsWithUniquePromotions(unit:GetOwner(), GameInfo.UnitPromotions["PROMOTION_SPUE_ROHAN_CAVALRY"].ID) > 0
-			and player:GetUnitCountFromHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_ROHAN_CAVALRY"].ID) > 0
-			and unit:GetUnitClassType() == GameInfo.UnitClasses.UNITCLASS_GREAT_GENERAL.ID
+			and unit:GetUnitClassType() == GameInfoTypes.UNITCLASS_GREAT_GENERAL
+			and player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_ROHAN_CAVALRY"]) > 0
 		then
 			flag = 1
 		end
@@ -1952,7 +1952,7 @@ SPUE_HotAirBalloon_Button = {
 
 		return unit:CanMove()
 			and unit:GetUnitClassType() == GameInfoTypes.UNITCLASS_EXPLORERX
-			and player:HasPolicy(GameInfo.Policies["POLICY_RATIONALISM"].ID);
+			and player:HasPolicy(GameInfoTypes["POLICY_RATIONALISM"]);
 	end, -- or nil or a boolean, default is true
 
 	Disabled = function(action, unit)
@@ -2036,7 +2036,7 @@ SPUE_FuChuan_LandInfantry_Button = {
 
 		local flag = 0
 		-- local iCost = -1
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_FUCHUAN"].ID)
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_FUCHUAN"])
 			and plot:IsAdjacentToLand() and Players[unit:GetOwner()]:GetCapitalCity() ~= nil
 		then
 			-- 单位购买价格
@@ -2122,7 +2122,7 @@ SPUE_FuChuan_Cannon_Button = {
 
 		local flag = 0
 
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_FUCHUAN"].ID)
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_FUCHUAN"])
 			and plot:IsAdjacentToLand() and Players[unit:GetOwner()]:GetCapitalCity() ~= nil
 		then
 			-- 单位购买价格
@@ -2335,10 +2335,10 @@ SPUE_Emperor_Button = {
 	Disabled = function(action, unit)
 		local player = Players[unit:GetOwner()]
 		
-		if player:HasPolicy(GameInfo.Policies["POLICY_SPUE_EMPEROR_DUMMY"].ID) then
+		if player:HasPolicy(GameInfoTypes["POLICY_SPUE_EMPEROR_DUMMY"]) then
 			SPUE_Emperor_Button.Title = "TXT_KEY_COND_SPUE_EMPEROR_USED"
 		end
-		return player:HasPolicy(GameInfo.Policies["POLICY_SPUE_EMPEROR_DUMMY"].ID)
+		return player:HasPolicy(GameInfoTypes["POLICY_SPUE_EMPEROR_DUMMY"])
 	end, -- or nil or a boolean, default is false
 	Action = function(action, unit, eClick)
 		if eClick == Mouse.eRClick then
@@ -3515,12 +3515,10 @@ SPUE_Patronage_vBowman_Button = {
 		end
 
 		-- local numUnit = player:GetUnitClassCount(GameInfoTypes["UNITCLASS_SPUE_VASSAL_BOWMAN"]);
-		local numUnit = player:GetUnitCountFromHasPromotion(
-			GameInfo.UnitPromotions["PROMOTION_SPUE_VASSAL_BOWMAN"].ID)
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_GENERAL_BODYGUARD"].ID)
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_GENERAL_BODYGUARD"])
 			and csPlotFlag == 1
 			and Players[unit:GetOwner()]:GetCapitalCity() ~= nil
-			and numUnit < GameInfo.UnitClasses["UNITCLASS_SPUE_VASSAL_BOWMAN"].MaxPlayerInstances
+			and player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_VASSAL_BOWMAN"]) < GameInfo.UnitClasses["UNITCLASS_SPUE_VASSAL_BOWMAN"].MaxPlayerInstances
 		then
 			-- 单位购买价格
 			local sUnitType = GetCivSpecificUnit(player, "UNITCLASS_SPUE_VASSAL_BOWMAN");
@@ -3683,12 +3681,10 @@ SPUE_Patronage_OceanFire_Button = {
 		local flag = 0
 
 		-- local numUnit = player:GetUnitClassCount(GameInfoTypes["UNITCLASS_SPUE_OCEAN_FIRE"]);
-		local numUnit = player:GetUnitCountFromHasPromotion(
-			GameInfo.UnitPromotions["PROMOTION_SPUE_OCEAN_FIRE"].ID);
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_BUCELLARII_GUARD"].ID)
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_BUCELLARII_GUARD"])
 			and plot:IsCoastalLand()
 			and Players[unit:GetOwner()]:GetCapitalCity() ~= nil
-			and numUnit < GameInfo.UnitClasses["UNITCLASS_SPUE_OCEAN_FIRE"].MaxPlayerInstances
+			and player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_OCEAN_FIRE"]) < GameInfo.UnitClasses["UNITCLASS_SPUE_OCEAN_FIRE"].MaxPlayerInstances
 		then
 			-- 单位购买价格
 			local sUnitType = GetCivSpecificUnit(player, "UNITCLASS_SPUE_OCEAN_FIRE");
@@ -3773,13 +3769,11 @@ SPUE_TreasureFleet_LandInfantry_Button = {
 		-- 		GameInfo.UnitPromotions["PROMOTION_SPUE_SHENJI_MUSKETEER2"].ID)
 		-- 	+ CountUnitsWithUniquePromotions(unit:GetOwner(),
 		-- 		GameInfo.UnitPromotions["PROMOTION_SPUE_SHENJI_MUSKETEER3"].ID)
-		local numUnit = player:GetUnitCountFromHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_SHENJI_MUSKETEER1"].ID) 
-			+ player:GetUnitCountFromHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_SHENJI_MUSKETEER2"].ID)
-			+ player:GetUnitCountFromHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_SHENJI_MUSKETEER3"].ID)
-
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_TREASURE_FLEET"].ID)
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_TREASURE_FLEET"])
 			and plot:IsAdjacentToLand() and Players[unit:GetOwner()]:GetCapitalCity() ~= nil
-			and numUnit < GameInfo.UnitClasses["UNITCLASS_SPUE_SHENJI_MUSKETEER"].MaxPlayerInstances
+			and player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_SHENJI_MUSKETEER1"]) 
+			+ player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_SHENJI_MUSKETEER2"])
+			+ player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_SHENJI_MUSKETEER3"]) < GameInfo.UnitClasses["UNITCLASS_SPUE_SHENJI_MUSKETEER"].MaxPlayerInstances
 		then
 			-- 单位购买价格
 			local sUnitType = GetCivSpecificUnit(player, "UNITCLASS_SPUE_SHENJI_MUSKETEER");
@@ -3876,11 +3870,9 @@ SPUE_Patronage_Corvette_Button = {
 		local flag = 0
 		-- local numUnit = CountUnitsWithUniquePromotions(unit:GetOwner(),
 		-- 	GameInfo.UnitPromotions["PROMOTION_SPUE_CORVETTE"].ID)
-		local numUnit = player:GetUnitCountFromHasPromotion(
-			GameInfo.UnitPromotions["PROMOTION_SPUE_CORVETTE"].ID)
-		if unit:CanMove() and unit:IsHasPromotion(GameInfo.UnitPromotions["PROMOTION_SPUE_TREASURE_FLEET"].ID)
+		if unit:CanMove() and unit:IsHasPromotion(GameInfoTypes["PROMOTION_SPUE_TREASURE_FLEET"])
 			and plot:IsAdjacentToLand() and Players[unit:GetOwner()]:GetCapitalCity() ~= nil
-			and numUnit < GameInfo.UnitClasses["UNITCLASS_SPUE_CORVETTE"].MaxPlayerInstances
+			and player:GetUnitCountFromHasPromotion(GameInfoTypes["PROMOTION_SPUE_CORVETTE"]) < GameInfo.UnitClasses["UNITCLASS_SPUE_CORVETTE"].MaxPlayerInstances
 		then
 			-- 单位购买价格
 			local sUnitType = GetCivSpecificUnit(player, "UNITCLASS_SPUE_CORVETTE");
@@ -4123,9 +4115,9 @@ SPUE_Genoa_Ship_Button = {
 
 		if unit:CanMove()
 			-- and CountUnitsWithUniquePromotions(unit:GetOwner(), unitPromotionGenoaEliteID) > 0
-			and player:GetUnitCountFromHasPromotion(unitPromotionGenoaEliteID) > 0
 			and unit:GetDomainType() == DomainTypes.DOMAIN_SEA
 			and plot:IsAdjacentToLand()
+			and player:GetUnitCountFromHasPromotion(unitPromotionGenoaEliteID) > 0
 		then
 			flag = 1
 		end
