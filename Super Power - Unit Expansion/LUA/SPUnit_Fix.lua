@@ -2920,6 +2920,33 @@ end
 
 GameEvents.BattleCustomDamage.Add(SPUEDamageDelta)
 --------------------------------------------------------------
+-- 溅射伤害结束事件
+--------------------------------------------------------------
+function OnSuperUESplashFinish(iPlayer, iUnit, iDefensePlayer, iNumAOEKill, bRangedAttack)
+	local pPlayer = Players[iPlayer];
+	if pPlayer == nil then return end;
+	local pUnit = pPlayer:GetUnitByID(iUnit)
+	if pUnit == nil or not pUnit:IsHasPromotion(unitPromotion055ID) then return end
+
+	------鹰击21攻击结束后失去晋升
+	if pUnit:IsHasPromotion(unitPromotion055Missile3ID) then
+		pUnit:SetHasPromotion(unitPromotion055Missile3ID, false)
+		pUnit:SetHasPromotion(unitPromotion055Missile2ID, true)
+	elseif pUnit:IsHasPromotion(unitPromotion055Missile2ID) then
+		pUnit:SetHasPromotion(unitPromotion055Missile2ID, false)
+		pUnit:SetHasPromotion(unitPromotion055Missile1ID, true)
+	elseif pUnit:IsHasPromotion(unitPromotion055Missile1ID) then
+		pUnit:SetHasPromotion(unitPromotion055Missile1ID, false)
+	end
+
+	if not pPlayer:IsHuman() then return end
+	Events.GameplayAlertMessage( Locale.ConvertTextKey("TXT_KEY_PROMOTION_SPUE_ORDER_SUPER_055_TEXT1L") );
+	if iNumAOEKill > 0 then
+		Events.GameplayAlertMessage( Locale.ConvertTextKey("TXT_KEY_PROMOTION_SPUE_ORDER_SUPER_055_TEXT3N") );
+	end
+end
+GameEvents.OnTriggerSplashFinish.Add(OnSuperUESplashFinish)
+--------------------------------------------------------------
 -- 南洋海盗船远程劫掠
 --------------------------------------------------------------
 --print("This is the 'Units - Ranged Pillage' mod script.")
