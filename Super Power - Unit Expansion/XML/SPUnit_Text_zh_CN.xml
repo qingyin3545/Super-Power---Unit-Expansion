@@ -600,7 +600,7 @@
 		</Row>
 		<Row Tag="TXT_KEY_PROMOTION_SPUE_HOT_AIR_BALLOON_BUTTON">
 			<Text>
-				征召一队可持续5个回合的临时热气球
+				花费购买价格的1/5，征召一队可持续5个回合的临时热气球
 				[NEWLINE]征召后需要在友方区域[COLOR_NEGATIVE_TEXT]补充[ENDCOLOR]才可以[COLOR_POSITIVE_TEXT]再次征召[ENDCOLOR]
 			</Text>
 		</Row>

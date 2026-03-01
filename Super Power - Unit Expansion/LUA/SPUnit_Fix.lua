@@ -1785,6 +1785,7 @@ LuaEvents.UnitPanelActionAddin(SPUE_Rohan_Cavalry_Button)
 -- 探险家：临时热气球
 --------------------------------------------------------------
 --include('UtilityFunctions.lua')
+local iBalloonID = GameInfoTypes["UNIT_SPUE_HOT_AIR_BALLOON"]
 SPUE_HotAirBalloon_Button = {
 	Name = "Hot Air Balloon",
 	Title = "TXT_KEY_PROMOTION_SPUE_HOT_AIR_BALLOON_BUTTON_SHORT", -- or a TXT_KEY
@@ -1806,6 +1807,11 @@ SPUE_HotAirBalloon_Button = {
 	end, -- or nil or a boolean, default is true
 
 	Disabled = function(action, unit)
+		local player = Players[unit:GetOwner()]
+		local goldCost = SPUE_UnitPurchaseCost(player, iBalloonID);
+		if goldCost then 
+			return player:GetGold() < goldCost * 0.2
+		end
 		return false;
 	end, -- or nil or a boolean, default is false
 
@@ -1817,7 +1823,7 @@ SPUE_HotAirBalloon_Button = {
 		local unitAIType = unit:GetUnitAIType()
 
 
-		local NewUnit = player:InitUnit(GameInfoTypes["UNIT_SPUE_HOT_AIR_BALLOON"], unitX, unitY)
+		local NewUnit = player:InitUnit(iBalloonID, unitX, unitY)
 		NewUnit:SetHasPromotion(GameInfoTypes["PROMOTION_NO_CASUALTIES"], true)
 		NewUnit:SetHasPromotion(GameInfoTypes["PROMOTION_SPUE_HOT_AIR_BALLOON"], true)
 		if plot:GetNumUnits() > 2 then
@@ -1827,6 +1833,8 @@ SPUE_HotAirBalloon_Button = {
 
 		unit:SetMoves(0)
 		unit:SetHasPromotion(GameInfoTypes["PROMOTION_SPUE_HOT_AIR_BALLOON_RELEASED"], true)
+
+		player:ChangeGold(-SPUE_UnitPurchaseCost(player, iBalloonID) * 0.2)
 	end
 };
 
